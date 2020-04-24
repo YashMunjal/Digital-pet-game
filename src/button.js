@@ -5,6 +5,7 @@ const toggleHighlighted = (icon, show) =>
     .querySelector(`.${ICONS[icon]}-icon`)
     .classList.toggle("highlighted", show);
 
+    //looping the buttons around
 export default function initButtons(handleUserAction) {
   let selectedIcon = 0;
   function buttonClick({ target }) {
