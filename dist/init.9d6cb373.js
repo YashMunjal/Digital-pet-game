@@ -132,22 +132,77 @@ const gameState = {
     this.clock++;
     console.log(this.clock);
     return this.clock;
+  },
+
+  handleUserAction(icon) {
+    console.log(icon);
   }
 
 };
 var _default = gameState;
 exports.default = _default;
-},{}],"init.js":[function(require,module,exports) {
+},{}],"constants.js":[function(require,module,exports) {
 "use strict";
 
-var _gameState = _interopRequireDefault(require("./gameState"));
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TICK_RATE = exports.ICONS = void 0;
+const ICONS = ["fish", "poop", "weather"];
+exports.ICONS = ICONS;
+const TICK_RATE = 3000;
+exports.TICK_RATE = TICK_RATE;
+},{}],"button.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = initButtons;
+
+var _constants = require("./constants");
+
+const toggleHighlighted = (icon, show) => document.querySelector(`.${_constants.ICONS[icon]}-icon`).classList.toggle("highlighted", show);
+
+function initButtons(handleUserAction) {
+  let selectedIcon = 0;
+
+  function buttonClick({
+    target
+  }) {
+    if (target.classList.contains("left-btn")) {
+      toggleHighlighted(selectedIcon, false);
+      selectedIcon = (2 + selectedIcon) % _constants.ICONS.length;
+      toggleHighlighted(selectedIcon, true);
+    } else if (target.classList.contains("right-btn")) {
+      toggleHighlighted(selectedIcon, false);
+      selectedIcon = (1 + selectedIcon) % _constants.ICONS.length;
+      toggleHighlighted(selectedIcon, true);
+    } else {
+      handleUserAction(_constants.ICONS[selectedIcon]);
+    }
+  }
+
+  document.querySelector(".buttons").addEventListener("click", buttonClick);
+}
+},{"./constants":"constants.js"}],"init.js":[function(require,module,exports) {
+"use strict";
+
+var _gameState = _interopRequireWildcard(require("./gameState"));
+
+var _constants = require("./constants");
+
+var _button = _interopRequireDefault(require("./button"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const TICK_RATE = 3000;
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 async function init() {
   console.log("starting game");
+  (0, _button.default)(_gameState.default.handleUserAction);
   let nextTimeToTick = Date.now();
 
   function nextAnimationFrame() {
@@ -156,7 +211,7 @@ async function init() {
     if (nextTimeToTick <= now) {
       _gameState.default.tick();
 
-      nextTimeToTick = now + TICK_RATE;
+      nextTimeToTick = now + _constants.TICK_RATE;
     }
 
     requestAnimationFrame(nextAnimationFrame);
@@ -166,7 +221,7 @@ async function init() {
 }
 
 init();
-},{"./gameState":"gameState.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./gameState":"gameState.js","./constants":"constants.js","./button":"button.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -194,7 +249,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64294" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65295" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

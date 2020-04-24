@@ -61,7 +61,7 @@
     width: 228px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
   }
   
   .icons {
@@ -72,7 +72,7 @@
     width: 374px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
   }
   
   /* lol poop */
