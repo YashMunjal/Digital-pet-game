@@ -155,7 +155,7 @@ exports.getNextPoopTime = getNextPoopTime;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.togglePoopBag = exports.modScene = exports.modFox = void 0;
+exports.writeModal = exports.togglePoopBag = exports.modScene = exports.modFox = void 0;
 
 const modFox = function modFox(state) {
   document.querySelector(".fox").className = `fox fox-${state}`;
@@ -174,6 +174,12 @@ const togglePoopBag = function togglePoopBag(show) {
 };
 
 exports.togglePoopBag = togglePoopBag;
+
+const writeModal = function writeModal(text = "") {
+  document.querySelector(".modal").innerHTML = `<div class="modal-inner">${text}</div>`;
+};
+
+exports.writeModal = writeModal;
 },{}],"gameState.js":[function(require,module,exports) {
 "use strict";
 
@@ -226,6 +232,7 @@ const gameState = {
     this.wakeTime = this.clock + 3;
     (0, _ui.modFox)('egg');
     (0, _ui.modScene)('day');
+    (0, _ui.writeModal)();
   },
 
   wake() {
@@ -246,7 +253,18 @@ const gameState = {
     (0, _ui.modFox)("sleep");
     (0, _ui.modScene)("night");
     console.log("Nighty");
+    this.clearTimes();
     this.wakeTime = this.clock + _constants.NIGHT_LENGTH;
+  },
+
+  clearTimes() {
+    this.wakeTime = -1;
+    this.sleepTime = -1;
+    this.hungryTime = -1;
+    this.dieTime = -1;
+    this.poopTime = -1;
+    this.timeToStartCelebrating = -1;
+    this.timeToEndCelebrating = -1;
   },
 
   getHungry() {
@@ -257,7 +275,12 @@ const gameState = {
   },
 
   die() {
-    console.log("Mar daala");
+    console.log("Mar daala bc");
+    this.current = "DEAD";
+    (0, _ui.modScene)("dead");
+    (0, _ui.modFox)("dead");
+    this.sleepTime = -1;
+    (0, _ui.writeModal)("The fox died :( <br/> Press the middle button to start");
   },
 
   handleUserAction(icon) {
@@ -298,7 +321,7 @@ const gameState = {
 
     if (this.current === "POOPING") {
       this.dieTime = -1;
-      togglePoopBag(true);
+      (0, _ui.togglePoopBag)(true);
       this.startCelebrating();
       this.hungryTime = (0, _constants.getNextHungerTime)(this.clock);
     }
@@ -329,7 +352,7 @@ const gameState = {
     this.timeToEndCelebrating = -1;
     this.current = "IDLING";
     this.determineFoxState();
-    togglePoopBag(false);
+    (0, _ui.togglePoopBag)(false);
   },
 
   determineFoxState() {
