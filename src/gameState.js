@@ -13,6 +13,7 @@ const gameState = {
   dieTime: -1,
   timeToStartCelebrating: -1,
   timeToEndCelebrating: -1,
+  poopTime: -1,
   tick() {
     this.clock++;
     console.log(this.clock);
@@ -31,6 +32,9 @@ const gameState = {
       this.startCelebrating();
     } else if (this.clock === this.timeToEndCelebrating) {
       this.endCelebrating();
+    }
+    else if (this.clock === this.poopTime) {
+      this.poop();
     }
     return this.clock;
   },
@@ -99,7 +103,14 @@ const gameState = {
     this.determineFoxState();
   },
   cleanUpPoop() {
-    console.log('cleanUpPoop')
+    console.log('cleanUpPoop');
+    if (this.current === "POOPING") {
+      this.dieTime = -1;
+      togglePoopBag(true);
+      this.startCelebrating();
+      this.hungryTime = getNextHungerTime(this.clock);
+    }
+
   },
   feed() {
     console.log('feed')
@@ -124,6 +135,7 @@ const gameState = {
     this.timeToEndCelebrating = -1;
     this.current = "IDLING";
     this.determineFoxState();
+    togglePoopBag(false);
   },
   determineFoxState() {
     if (this.current === 'IDLING') {
@@ -133,6 +145,12 @@ const gameState = {
         modFox("idling");
       }
     }
+  },
+  poop() {
+    this.current = "POOPING";
+    this.poopTime = -1;
+    this.dieTime = getNextDieTime(this.clock);
+    modFox("pooping");
   },
 };
 
